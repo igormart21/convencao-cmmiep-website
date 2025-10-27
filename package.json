@@ -1,0 +1,8 @@
+{
+  "name": "cmmiep-website",
+  "version": "1.0.0",
+  "description": "Site da CMMIEP - Site estático HTML",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -o"
+  }
+}
