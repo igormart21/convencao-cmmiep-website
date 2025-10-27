@@ -1,8 +1,14 @@
 {
   "name": "cmmiep-website",
   "version": "1.0.0",
-  "description": "Site da CMMIEP - Site estático HTML",
+  "description": "Site da CMMIEP - Convenção dos Ministros e Ministros Evangélicos Pentecostais",
+  "main": "index.html",
   "scripts": {
-    "start": "npx http-server . -p 3000 -o"
-  }
+    "build": "echo 'Build estático - nada a fazer'",
+    "start": "npx http-server . -p 3000 -o",
+    "dev": "npx live-server --port=3000 --open=/index.html"
+  },
+  "keywords": ["cmmiep", "site", "html", "css", "javascript", "pentecostal"],
+  "author": "CMMIEP",
+  "license": "MIT"
 }

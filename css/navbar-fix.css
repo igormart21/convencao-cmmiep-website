@@ -1,0 +1,117 @@
+/* Correção para navbar em branco - CMMIEP */
+
+/* Garantir que o header tenha fundo visível e largura correta */
+.elementor-element-da4c914 {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+}
+
+/* Corrigir espaçamento e layout do container principal */
+.elementor-element-cfc1145 {
+    background-color: transparent !important;
+    padding: 10px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* Garantir que o logo seja exibido corretamente */
+.elementor-element-23c6044 {
+    flex-shrink: 0 !important;
+    margin-right: 20px !important;
+}
+
+.elementor-element-23c6044 img {
+    max-height: 60px !important;
+    width: auto !important;
+}
+
+/* Menu hambúrguer removido - ajustes de layout */
+
+/* Corrigir o campo de pesquisa */
+.elementor-element-a6b3d7d {
+    flex: 1 !important;
+    max-width: 400px !important;
+    margin-left: 20px !important;
+    margin-right: 15px !important;
+}
+
+.elementor-element-a6b3d7d .e-search-input {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    width: 100% !important;
+}
+
+/* Container do off-canvas removido - ajustes de layout */
+
+.elementor-element-be01f21,
+.elementor-element-988a214,
+.elementor-element-b05b80f {
+    margin: 0 !important;
+    display: inline-block !important;
+    margin-left: 10px !important;
+}
+
+.elementor-element-be01f21 .elementor-button,
+.elementor-element-988a214 .elementor-button,
+.elementor-element-b05b80f .elementor-button {
+    background-color: #28a745 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.elementor-element-be01f21 .elementor-button:hover,
+.elementor-element-988a214 .elementor-button:hover,
+.elementor-element-b05b80f .elementor-button:hover {
+    background-color: #218838 !important;
+}
+
+/* Corrigir elementos sticky duplicados */
+.elementor-sticky__spacer {
+    display: none !important;
+}
+
+/* Garantir que o header principal seja visível */
+.elementor-element-da4c914:not(.elementor-sticky__spacer) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    .elementor-element-cfc1145 {
+        flex-wrap: wrap !important;
+        padding: 10px !important;
+    }
+    
+    .elementor-element-a6b3d7d {
+        order: 3 !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+        margin-right: 0 !important;
+    }
+    
+    .elementor-element-9afca4f {
+        order: 2 !important;
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 10px !important;
+    }
+}
