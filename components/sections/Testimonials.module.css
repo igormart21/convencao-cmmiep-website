@@ -1,0 +1,80 @@
+.testimonials {
+    padding: 6rem 0;
+    background-color: #ffffff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: var(--color-primary-blue);
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.stars {
+    color: var(--color-primary-yellow);
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    align-items: center;
+}
+
+.stars span {
+    color: #666;
+    font-size: 1rem;
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background-color: #F8F9FA;
+    padding: 2.5rem;
+    border-radius: 12px;
+    position: relative;
+}
+
+.quoteIcon {
+    font-size: 2.5rem;
+    color: rgba(7, 51, 118, 0.1);
+    margin-bottom: 1rem;
+}
+
+.text {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.author {
+    display: flex;
+    flex-direction: column;
+}
+
+.author strong {
+    color: var(--color-primary-blue);
+    font-size: 1rem;
+}
+
+.author span {
+    font-size: 0.85rem;
+    color: #666;
+}

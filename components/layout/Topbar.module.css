@@ -1,0 +1,45 @@
+.topbar {
+    background-color: var(--color-primary-blue);
+    color: #ffffff;
+    padding: 8px 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.button {
+    background-color: var(--color-primary-yellow);
+    color: var(--color-primary-blue);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #F7E58E;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
