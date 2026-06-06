@@ -1,0 +1,4 @@
+project_id = "unoixnntunmnoeeqfhqq"
+
+[functions.gerar-pingente]
+verify_jwt = false

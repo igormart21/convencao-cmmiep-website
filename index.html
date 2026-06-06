@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6G3B839DV7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6G3B839DV7');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        var pathname = window.location.pathname;
+        if (pathname.indexOf("/cart/c/") === 0) {
+          var checkoutUrl = "https://store-store-builder-joaax.myshopify.com" + pathname + window.location.search + window.location.hash;
+          window.location.replace(checkoutUrl);
+        }
+      })();
+    </script>
+    <meta name="google" content="notranslate" />
+    <!-- TODO: Set the document title to the name of your application -->
+    <title>Lovable App</title>
+    <meta name="description" content="Build and manage a Shopify online store with seamless integration." />
+    <meta name="author" content="Lovable" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Pinyon+Script&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- TODO: Update og:title to match your application name -->
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2d8a069a-b131-4db4-9427-d66cf7816816/id-preview-348d2bb1--87c35f52-e476-476f-abd0-53b44b9a24cb.lovable.app-1777475418565.png"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@Lovable" />
+    <meta
+      name="twitter:image"
+      content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2d8a069a-b131-4db4-9427-d66cf7816816/id-preview-348d2bb1--87c35f52-e476-476f-abd0-53b44b9a24cb.lovable.app-1777475418565.png"
+    />
+    <meta property="og:title" content="Lovable App" />
+    <meta name="twitter:title" content="Lovable App" />
+    <meta property="og:description" content="Build and manage a Shopify online store with seamless integration." />
+    <meta name="twitter:description" content="Build and manage a Shopify online store with seamless integration." />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
