@@ -758,7 +758,7 @@ const ModalidadePage = ({ config }: { config: ModalidadeConfig }) => {
             <section className="pt-2 border-t border-accent/20">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground">Investimento</span>
-                <span className="font-display text-lg gold-text">a partir de R$ 890</span>
+                <span className="font-display text-lg gold-text">R$ 890</span>
               </div>
               <Button onClick={handleAdicionar} disabled={adicionando || !podeAdicionar} className="w-full bg-gradient-to-r from-[#b8860b] via-[#d4af37] to-[#b8860b] text-black hover:opacity-90 font-display tracking-[0.3em] uppercase text-xs py-3 h-auto">
                 {adicionando ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" />Adicionando…</>) : (<><Sparkles className="h-4 w-4 mr-2" />Adicionar ao carrinho</>)}
@@ -1068,7 +1068,7 @@ const LuxuryConfigurator = (p: LuxuryProps) => {
                     </p>
                     <div className="flex items-baseline gap-2 mb-5">
                       <span className="text-[9px] tracking-[0.4em] uppercase text-white/40">Investimento da peça</span>
-                      <span className="font-display text-base gold-text">a partir de R$ 890</span>
+                      <span className="font-display text-base gold-text">R$ 890</span>
                     </div>
                     <button
                       onClick={p.handleAdicionar}

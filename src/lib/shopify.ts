@@ -1,5 +1,6 @@
 import { toast } from "sonner";
-import aeronJoia from "@/assets/aeron-joia.jpeg";
+import aeronJoia from "@/assets/8c5b91a8-d2a6-4785-9930-9c9dec489c2b.png";
+import veloxRoyaleOuroMasc from "@/assets/linha-velox-royale-ouro-masculino.jpg";
 
 export const SHOPIFY_API_VERSION = '2026-04';
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = 'store-store-builder-joaax.myshopify.com';
@@ -211,14 +212,14 @@ const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Recor
     basePrice: "3487.00",
     variantPrices: {
       "ouro": "3487.00",
-      "prata": "2510.64"
+      "prata": "297.00"
     }
   },
   "velox-royale": {
     basePrice: "3487.00",
     variantPrices: {
       "ouro": "3487.00",
-      "prata": "2510.64"
+      "prata": "297.00"
     }
   },
   "velox-royale-fem-speed": {
@@ -246,14 +247,14 @@ const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Recor
     basePrice: "4387.00",
     variantPrices: {
       "ouro": "4387.00",
-      "prata": "3158.64"
+      "prata": "297.00"
     }
   },
   velarion: {
     basePrice: "4297.00",
     variantPrices: {
       "ouro": "4297.00",
-      "prata": "3093.84"
+      "prata": "297.00"
     }
   },
   imperium: {
@@ -290,16 +291,16 @@ const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Recor
       "clássico prata": "297.00",
       "classico prata": "297.00",
       "ouro": "3997.00",
-      "prata": "327.00"
+      "prata": "297.00"
     }
   },
   monarch: {
     basePrice: "3997.00",
     variantPrices: {
       "underground ouro": "2987.00",
-      "underground prata": "327.00",
+      "underground prata": "297.00",
       "ouro": "3997.00",
-      "prata": "327.00"
+      "prata": "297.00"
     }
   },
   valenza: {
@@ -310,9 +311,9 @@ const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Recor
       "clássico prata": "297.00",
       "classico prata": "297.00",
       "underground ouro": "2787.00",
-      "underground prata": "327.00",
+      "underground prata": "297.00",
       "ouro": "3997.00",
-      "prata": "327.00"
+      "prata": "297.00"
     }
   },
   "imperium-crossfit": {
@@ -366,6 +367,40 @@ const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Recor
       "ouro": "2587.00",
       "prata": "327.00"
     }
+  },
+  sprint: {
+    basePrice: "297.00",
+    variantPrices: {
+      "ouro": "297.00"
+    }
+  },
+  ritmo: {
+    basePrice: "2187.00",
+    variantPrices: {
+      "ouro": "2187.00",
+      "prata": "297.00"
+    }
+  },
+  cartier: {
+    basePrice: "1700.00",
+    variantPrices: {
+      "ouro": "1700.00",
+      "prata": "259.00"
+    }
+  },
+  veneziana: {
+    basePrice: "1500.00",
+    variantPrices: {
+      "ouro": "1500.00",
+      "prata": "287.00"
+    }
+  },
+  brinco: {
+    basePrice: "1300.00",
+    variantPrices: {
+      "ouro": "1300.00",
+      "prata": "299.00"
+    }
   }
 };
 
@@ -374,18 +409,30 @@ const IMAGENS_OVERRIDE: Record<string, { productFeatured?: string; variants?: Re
     variants: {
       "ouro": aeronJoia
     }
+  },
+  "velox-royale": {
+    variants: {
+      "ouro": veloxRoyaleOuroMasc
+    }
   }
+};
+
+const DESCRICAO_OVERRIDE: Record<string, string> = {
+  "velox-royale": "Criada para quem transforma resistência em assinatura. A linha VELOX ROYALE representa o ciclismo em sua forma mais refinada: potência, precisão e elegância em movimento. Inspirada nos atletas que enxergam a estrada como extensão da própria identidade, cada peça carrega uma estética minimalista com presença absoluta. Disponível nas versões Ouro 18k e Prata 925. Luxo esportivo elevado ao máximo nível. VELOX ROYALE.Para quem pedala acima do comum."
 };
 
 export function overridePrices(obj: any): any {
   if (!obj || typeof obj !== 'object') return obj;
 
+  if (obj.handle && DESCRICAO_OVERRIDE[obj.handle]) {
+    obj.description = DESCRICAO_OVERRIDE[obj.handle];
+  }
+
   // Se o objeto for um produto
   if (obj.handle && PRECOS_OVERRIDE[obj.handle]) {
     const override = PRECOS_OVERRIDE[obj.handle];
-    if (obj.priceRange && obj.priceRange.minVariantPrice) {
-      obj.priceRange.minVariantPrice.amount = override.basePrice;
-    }
+    let minPrice = Infinity;
+
     if (obj.variants && Array.isArray(obj.variants.edges)) {
       obj.variants.edges.forEach((edge: any) => {
         if (edge.node) {
@@ -404,8 +451,20 @@ export function overridePrices(obj: any): any {
           if (!priceSet && v.price) {
             v.price.amount = override.basePrice;
           }
+          const pAmount = parseFloat(v.price.amount);
+          if (pAmount < minPrice) {
+            minPrice = pAmount;
+          }
         }
       });
+    }
+
+    if (obj.priceRange && obj.priceRange.minVariantPrice) {
+      if (minPrice !== Infinity) {
+        obj.priceRange.minVariantPrice.amount = minPrice.toString();
+      } else {
+        obj.priceRange.minVariantPrice.amount = override.basePrice;
+      }
     }
   }
 
@@ -428,7 +487,7 @@ export function overridePrices(obj: any): any {
         }
       });
     }
-    if (obj.variants && Array.isArray(obj.variants.edges) && obj.variants.edges[0]?.node) {
+    if (obj.handle !== "velox-royale" && obj.variants && Array.isArray(obj.variants.edges) && obj.variants.edges[0]?.node) {
       const firstVariant = obj.variants.edges[0].node;
       const titleLower = (firstVariant.title || "").toLowerCase();
       if (imgOverride.variants) {

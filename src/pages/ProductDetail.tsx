@@ -6,8 +6,10 @@ import { ColecaoDestaque } from "@/components/ColecaoDestaque";
 import { PRODUCT_BY_HANDLE_QUERY, storefrontApiRequest } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
 
 const ProductDetail = () => {
+  const { t } = useLanguage();
   const { handle } = useParams();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ const ProductDetail = () => {
       quantity: 1,
       selectedOptions: variant.selectedOptions || [],
     });
-    toast.success("Peça adicionada à sua coleção", {
+    toast.success(t("product.toast_success"), {
       description: product.title,
     });
   };
@@ -99,13 +101,13 @@ const ProductDetail = () => {
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white/70 hover:text-[#d4af37] transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Coleções
+            {t("nav.collections")}
           </Link>
           <span
             className="hidden md:block font-serif italic text-sm tracking-[0.3em]"
             style={{ color: "#d4af37" }}
           >
-            ATELIÊ 3R
+            {t("nav.atelier3r")}
           </span>
           <CartDrawer />
         </div>
@@ -122,13 +124,13 @@ const ProductDetail = () => {
         ) : !product ? (
           <div className="container py-32 text-center">
             <h1 className="font-serif italic text-4xl mb-4 text-white/80">
-              Peça não encontrada
+              {t("product.not_found")}
             </h1>
             <Link
               to="/colecao"
               className="text-[#d4af37] underline text-sm tracking-[0.3em] uppercase"
             >
-              Voltar às coleções
+              {t("product.back_to_collections")}
             </Link>
           </div>
         ) : (
@@ -166,7 +168,7 @@ const ProductDetail = () => {
                           className="font-serif italic text-sm tracking-[0.4em] uppercase"
                           style={{ color: "rgba(212,175,55,0.55)" }}
                         >
-                          Imagem em breve
+                          {t("product.unavailable")}
                         </span>
                       </div>
                     )}
@@ -231,7 +233,7 @@ const ProductDetail = () => {
                       className="text-[10px] uppercase tracking-[0.5em]"
                       style={{ color: "#d4af37" }}
                     >
-                      Peça do Ateliê
+                      {t("product.badge")}
                     </span>
                   </div>
 
@@ -248,12 +250,34 @@ const ProductDetail = () => {
 
                   {product.description && (
                     <p
-                      className="font-serif italic text-base md:text-lg leading-relaxed mb-10 whitespace-pre-line"
+                      className="font-serif italic text-base md:text-lg leading-relaxed mb-6 whitespace-pre-line"
                       style={{ color: "rgba(244,234,208,0.75)" }}
                     >
                       {product.description}
                     </p>
                   )}
+
+                  {/* Detalhes do Conjunto e Tamanho */}
+                  <div className="flex flex-col gap-2.5 mb-10">
+                    <div className="inline-flex items-center gap-2.5 self-start bg-white/5 border border-white/10 rounded-lg px-3.5 py-2">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="rgba(244,234,208,0.85)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12h8M12 8v8" />
+                      </svg>
+                      <span className="font-sans text-xs font-semibold tracking-wider text-white/85">
+                        {t("product.set_details")}
+                      </span>
+                    </div>
+                    
+                    <div className="inline-flex items-center gap-2.5 self-start bg-[#C9A220]/10 border border-[#C9A220]/30 rounded-lg px-3.5 py-2">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#d4af37" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 3 3 21" /><path d="M3 8V3h5" /><path d="M21 16v5h-5" />
+                      </svg>
+                      <span className="font-sans text-xs font-semibold tracking-wider text-[#d4af37]">
+                        {t("product.size_details")}
+                      </span>
+                    </div>
+                  </div>
 
                   {/* Variações elegantes */}
                   {product.variants.edges.length > 1 && (
@@ -262,11 +286,13 @@ const ProductDetail = () => {
                         className="text-[10px] uppercase tracking-[0.4em] mb-4"
                         style={{ color: "rgba(212,175,55,0.7)" }}
                       >
-                        Variações
+                        {t("product.variations")}
                       </h3>
                       <div className="flex flex-wrap gap-3">
                         {product.variants.edges.map((v: any) => {
                           const sel = selectedVariantId === v.node.id;
+                          const titleLower = v.node.title.toLowerCase();
+                          const titleTranslated = titleLower.includes("ouro") ? t("atelie.linha.material.ouro") : (titleLower.includes("prata") ? t("atelie.linha.material.prata") : v.node.title);
                           return (
                             <button
                               key={v.node.id}
@@ -283,7 +309,7 @@ const ProductDetail = () => {
                                   : "transparent",
                               }}
                             >
-                              {v.node.title}
+                              {titleTranslated}
                             </button>
                           );
                         })}
@@ -294,13 +320,13 @@ const ProductDetail = () => {
                   {/* Preço discreto */}
                   <div className="mb-8">
                     <p className="text-[10px] uppercase tracking-[0.4em] text-white/45 mb-2">
-                      Investimento da peça
+                      {t("product.investment")}
                     </p>
                     <p
                       className="font-serif text-2xl md:text-3xl"
                       style={{ color: "#d4af37" }}
                     >
-                      A partir de {variant.price.currencyCode}{" "}
+                      {variant.price.currencyCode}{" "}
                       {parseFloat(variant.price.amount).toFixed(2)}
                     </p>
                   </div>
@@ -320,9 +346,9 @@ const ProductDetail = () => {
                     {isLoading ? (
                       <Loader2 className="h-5 w-5 animate-spin mx-auto" />
                     ) : variant?.availableForSale ? (
-                      "Adicionar à sua coleção"
+                      t("product.add_to_collection")
                     ) : (
-                      "Indisponível"
+                      t("product.unavailable")
                     )}
                   </button>
 
@@ -332,13 +358,13 @@ const ProductDetail = () => {
                       className="text-[10px] uppercase tracking-[0.4em] font-light"
                       style={{ color: "rgba(255,255,255,0.55)" }}
                     >
-                      Peça produzida sob demanda
+                      {t("product.handmade_notice")}
                     </p>
                     <p
                       className="text-[10px] uppercase tracking-[0.35em] font-light"
                       style={{ color: "rgba(255,255,255,0.4)" }}
                     >
-                      Prazo de entrega: 7 a 12 dias úteis
+                      {t("product.delivery_notice")}
                     </p>
                   </div>
                 </div>
@@ -359,7 +385,7 @@ const ProductDetail = () => {
                   className="text-[10px] uppercase tracking-[0.6em] mb-8"
                   style={{ color: "rgba(212,175,55,0.75)" }}
                 >
-                  Produção sob medida
+                  {t("product.custom_production_title")}
                 </p>
                 <div
                   className="space-y-7 font-light"
@@ -373,22 +399,18 @@ const ProductDetail = () => {
                   }}
                 >
                   <p className="italic">
-                    Cada peça é criada individualmente após a confirmação do
-                    pedido, passando por um processo artesanal que garante
-                    acabamento único, precisão e identidade em cada detalhe.
+                    {t("product.custom_production_desc1")}
                   </p>
                   <p
                     className="text-[11px] not-italic uppercase tracking-[0.45em]"
                     style={{ color: "#d4af37" }}
                   >
-                    Prazo total de produção e envio
+                    {t("product.custom_production_time")}
                     <br />
-                    <span className="text-white/85">7 a 12 dias úteis</span>
+                    <span className="text-white/85">{t("product.custom_production_days")}</span>
                   </p>
                   <p className="italic">
-                    Você não está adquirindo um produto pronto — está
-                    garantindo uma peça construída especialmente para
-                    acompanhar a sua jornada.
+                    {t("product.custom_production_desc2")}
                   </p>
                 </div>
                 <div
@@ -424,14 +446,14 @@ const ProductDetail = () => {
                     color: "#f4ead0",
                   }}
                 >
-                  Torne essa peça{" "}
-                  <em style={{ color: "#d4af37" }}>única</em>
+                  {t("product.custom_title")}{" "}
+                  <em style={{ color: "#d4af37" }}>{t("product.custom_title.italic")}</em>
                 </h2>
                 <p
                   className="text-base md:text-lg mb-10 italic"
                   style={{ color: "rgba(244,234,208,0.7)" }}
                 >
-                  Transforme essa criação em um símbolo exclusivo seu.
+                  {t("product.custom_desc")}
                 </p>
                 <Link
                   to="/catalogo"
@@ -445,7 +467,7 @@ const ProductDetail = () => {
                     className="h-px w-6"
                     style={{ background: "rgba(212,175,55,0.7)" }}
                   />
-                  Criar versão personalizada
+                  {t("product.custom_btn")}
                   <span
                     className="h-px w-6"
                     style={{ background: "rgba(212,175,55,0.7)" }}
@@ -456,8 +478,8 @@ const ProductDetail = () => {
 
             {/* Outras peças */}
             <ColecaoDestaque
-              title="Outras peças do ateliê"
-              subtitle="Criações que conversam com a sua escolha"
+              title={t("product.other_pieces")}
+              subtitle={t("product.other_pieces_desc")}
               limit={3}
             />
           </>
@@ -500,9 +522,9 @@ const ProductDetail = () => {
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin mx-auto" />
               ) : variant?.availableForSale ? (
-                "Adicionar"
+                t("cart.item.remove") === "Remover" ? "Adicionar" : (t("cart.item.remove") === "Eliminar" ? "Añadir" : "Add")
               ) : (
-                "Indisponível"
+                t("product.unavailable")
               )}
             </button>
           </div>

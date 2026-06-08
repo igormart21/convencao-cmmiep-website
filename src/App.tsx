@@ -23,6 +23,7 @@ import { WhatsappFloatingButton } from "@/components/WhatsappFloatingButton";
 import { HomeFloatingButton } from "@/components/HomeFloatingButton";
 import { AuthFloatingButton } from "@/components/AuthFloatingButton";
 import { CartDrawer } from "@/components/CartDrawer";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const AppRoutes = () => {
       <Route path="/teste-botoes" element={<TesteBotoes />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/atelie" element={<Atelie />} />
+      <Route path="/atelie/modalidades" element={<AtelieModalidades />} />
       <Route path="/atelie/modalidade/:slug" element={<AtelieModalidade />} />
       <Route path="/atelie/linha/:slug" element={<AtelieLinha />} />
       <Route path="/continuar" element={<Continuar />} />
@@ -64,15 +66,17 @@ const FloatingButtons = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner position="top-center" />
-      <BrowserRouter>
-        <AppRoutes />
-        <FloatingButtons />
-        <CartDrawer showTrigger={false} />
-      </BrowserRouter>
-    </TooltipProvider>
+    <LanguageProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner position="top-center" />
+        <BrowserRouter>
+          <AppRoutes />
+          <FloatingButtons />
+          <CartDrawer showTrigger={false} />
+        </BrowserRouter>
+      </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 

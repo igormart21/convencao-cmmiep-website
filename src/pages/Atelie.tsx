@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Atelie = () => {
+  const { t } = useLanguage();
+
   return (
     <div
       className="min-h-screen-safe w-full text-white relative overflow-hidden"
@@ -15,13 +18,13 @@ const Atelie = () => {
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white/70 hover:text-[#d4af37] transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Início
+            {t("nav.home")}
           </Link>
           <span
             className="hidden md:block font-display italic text-sm tracking-[0.3em]"
             style={{ color: "#d4af37" }}
           >
-            ATELIÊ 3R
+            {t("nav.atelier3r")}
           </span>
           <span className="w-16" />
         </div>
@@ -43,7 +46,7 @@ const Atelie = () => {
             className="text-[10px] uppercase tracking-[0.6em] mb-8"
             style={{ color: "rgba(212,175,55,0.75)" }}
           >
-            Coleção autoral
+            {t("atelie.welcome.badge")}
           </p>
           <h1
             className="font-display font-light leading-[1.05]"
@@ -56,9 +59,9 @@ const Atelie = () => {
               backgroundClip: "text",
             }}
           >
-            ATELIER
+            {t("atelie.welcome.title1")}
             <br />
-            3R FITNESS
+            {t("atelie.welcome.title2")}
           </h1>
 
           <div
@@ -79,9 +82,7 @@ const Atelie = () => {
               letterSpacing: "0.02em",
             }}
           >
-            Um espaço onde cada peça é concebida para celebrar o atleta que vive
-            em você. Escolha sua modalidade, descubra sua linha, eternize sua
-            jornada.
+            {t("atelie.welcome.desc")}
           </p>
 
           <div className="mt-16">
@@ -113,7 +114,7 @@ const Atelie = () => {
                 className="h-px w-6"
                 style={{ background: "currentColor" }}
               />
-              Entrar no ateliê
+              {t("atelie.welcome.enter")}
               <span
                 className="h-px w-6"
                 style={{ background: "currentColor" }}

@@ -25,6 +25,7 @@ import linhaHalterOuro from "@/assets/linha-halter-ouro.jpg";
 import linhaHalterPrata from "@/assets/linha-halter-prata.jpg";
 import linhaVeloxOuro from "@/assets/linha-velox-ouro.png";
 import linhaVeloxPrata from "@/assets/linha-velox-royale-prata-masculino.jpg";
+import veloxRoyaleOuroMasc from "@/assets/linha-velox-royale-ouro-masculino.jpg";
 import linhaAeronOuro from "@/assets/linha-aeron-ouro.png";
 import linhaAeronPrata from "@/assets/linha-aeron-prata-masculino.jpg";
 
@@ -33,6 +34,7 @@ import novaHalterOuro from "@/assets/linha-halter-ouro-nova.jpg";
 import novaCorridaOuroFem from "@/assets/linha-corrida-ouro-fem.jpg";
 import novaCorridaPrataFem from "@/assets/linha-corrida-prata-fem.jpg";
 import novaCorridaOuroMasc from "@/assets/linha-corrida-ouro-masc.jpg";
+import conjuntoCrossfitOuro from "@/assets/linha-conjunto-crossfit-ouro.jpg";
 
 const STATIC = [
   { nome: "Imperium", mat: "Ouro 18k", img: linhaImperiumOuro, hot: true },
@@ -48,6 +50,7 @@ const STATIC = [
   { nome: "Corrida Atleta",    mat: "Ouro 18k", img: novaCorridaOuroFem, preco: 3597 },
   { nome: "Corrida Atleta",    mat: "Prata",    img: novaCorridaPrataFem, preco: 297 },
   { nome: "Corrida Elite",     mat: "Ouro 18k", img: novaCorridaOuroMasc, preco: 3597 },
+  { nome: "Corrente e Pingente CrossFit", mat: "Ouro 18k", img: conjuntoCrossfitOuro, preco: 3487 },
 ];
 
 const ATELIE_EXTRA = [
@@ -56,12 +59,17 @@ const ATELIE_EXTRA = [
   { nome: "Corrida Atleta",    mat: "Ouro 18k", img: novaCorridaOuroFem, preco: 3597 },
   { nome: "Corrida Atleta",    mat: "Prata",    img: novaCorridaPrataFem, preco: 297 },
   { nome: "Corrida Elite",     mat: "Ouro 18k", img: novaCorridaOuroMasc, preco: 3597 },
+  { nome: "Corrente e Pingente CrossFit", mat: "Ouro 18k", img: conjuntoCrossfitOuro, preco: 3487 },
 ];
 
 const WPP = "https://wa.me/5548991486304?text=Ol%C3%A1!%20Tenho%20interesse%20em%20uma%20joia%203R%20Fitness.%20Pode%20me%20informar%20mais%3F";
 
 const isGold = (title: string) =>
   title.toLowerCase().includes("ouro") || title.toLowerCase().includes("gold");
+
+const getProductMaterials = (product: ShopifyProduct) => {
+  return ["Ouro 18k", "Prata"];
+};
 
 const fmtBRL = (amount: string) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(parseFloat(amount));
@@ -77,6 +85,9 @@ const getAtelieProductMock = (nome: string, mat: string, img: string, preco: num
   } else if (nome.toLowerCase().includes("imperium crossfit")) {
     handle = "imperium-crossfit";
     variantId = isOuro ? "gid://shopify/ProductVariant/48916550746339" : "gid://shopify/ProductVariant/48916550811875";
+  } else if (nome.toLowerCase().includes("corrente e pingente crossfit")) {
+    handle = "conjunto-crossfit-ouro";
+    variantId = "gid://shopify/ProductVariant/48916550746339";
   } else if (nome.toLowerCase().includes("corrida atleta")) {
     handle = "corrida-atleta";
     variantId = isOuro ? "gid://shopify/ProductVariant/48914322391267" : "gid://shopify/ProductVariant/48914322424035";
@@ -309,22 +320,67 @@ export const ProductShowcase = () => {
                     </div>
                   </div>
                   <div style={{ padding: "14px 16px 16px" }}>
-                    <div style={{ height: 50, display: "flex", flexDirection: "column", justifyContent: "flex-start", marginBottom: 12 }}>
+                    <div style={{ height: 68, display: "flex", flexDirection: "column", justifyContent: "flex-start", marginBottom: 8 }}>
                       <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 16, fontWeight: 400, color: "#1C1814", lineHeight: 1.2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {name}
                       </div>
+                      {(() => {
+                        const mats = getProductMaterials(product);
+                        return (
+                          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, color: "#6B5E52", display: "flex", flexDirection: "column", gap: 2, marginTop: 4 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                              <div style={{ display: "flex", gap: 2 }}>
+                                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#C9A220,#E8C84A)", display: "inline-block", flexShrink: 0 }} />
+                                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block", flexShrink: 0 }} />
+                              </div>
+                              {mats.join(" / ")}
+                            </div>
+                            <span style={{ fontSize: 9.5, color: "#C9A220", fontWeight: 600, letterSpacing: "0.03em" }}>Corrente + Pingente</span>
+                          </div>
+                        );
+                      })()}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, fontWeight: 600, color: "#C9A220" }}>
-                        {hasMultipleVariants ? "A partir de " : ""}{fmtBRL(price.amount)}
+                    <div style={{ marginBottom: 12 }}>
+                      <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, color: "#C9A220" }}>
+                        {fmtBRL(price.amount)}
                       </span>
-                      <button
-                        onClick={() => setPreview({ kind: "shopify", data: { product, variantIdx: 0 } })}
-                        style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, fontWeight: 600, color: "#C9A220", background: "none", border: "none", cursor: "pointer", padding: 0, whiteSpace: "nowrap" }}
-                      >
-                        Ver →
-                      </button>
                     </div>
+                    <button
+                      onClick={() => setPreview({ kind: "shopify", data: { product, variantIdx: 0 } })}
+                      style={{
+                        width: "100%",
+                        fontFamily: "'Inter',sans-serif",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.05em",
+                        color: "#1C1814",
+                        background: "none",
+                        border: "1px solid rgba(28,24,20,0.15)",
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        transition: "all 0.2s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 4
+                      }}
+                      onMouseEnter={e => {
+                        const target = e.currentTarget as HTMLElement;
+                        target.style.background = "#1C1814";
+                        target.style.color = "#F8F5F0";
+                        target.style.borderColor = "#1C1814";
+                      }}
+                      onMouseLeave={e => {
+                        const target = e.currentTarget as HTMLElement;
+                        target.style.background = "none";
+                        target.style.color = "#1C1814";
+                        target.style.borderColor = "rgba(28,24,20,0.15)";
+                      }}
+                    >
+                      Ver detalhes →
+                    </button>
                   </div>
                 </div>
               );
@@ -360,26 +416,62 @@ export const ProductShowcase = () => {
                     </div>
                   </div>
                   <div style={{ padding: "14px 16px 16px" }}>
-                    <div style={{ height: 50, display: "flex", flexDirection: "column", justifyContent: "flex-start", marginBottom: 12 }}>
+                    <div style={{ height: 68, display: "flex", flexDirection: "column", justifyContent: "flex-start", marginBottom: 8 }}>
                       <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 16, fontWeight: 400, color: "#1C1814", lineHeight: 1.2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {nome}
                       </div>
-                      <div style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, color: "#6B5E52", display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: isGold(mat) ? "linear-gradient(135deg,#C9A220,#E8C84A)" : "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block", flexShrink: 0 }} />
-                        {mat}
+                      <div style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, color: "#6B5E52", display: "flex", flexDirection: "column", gap: 2, marginTop: 4 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                          <div style={{ display: "flex", gap: 2 }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#C9A220,#E8C84A)", display: "inline-block", flexShrink: 0 }} />
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block", flexShrink: 0 }} />
+                          </div>
+                          Ouro 18k / Prata
+                        </div>
+                        <span style={{ fontSize: 9.5, color: "#C9A220", fontWeight: 600, letterSpacing: "0.03em" }}>Corrente + Pingente</span>
                       </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, fontWeight: 600, color: "#C9A220" }}>
+                    <div style={{ marginBottom: 12 }}>
+                      <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, color: "#C9A220" }}>
                         {preco ? fmtBRL(String(preco)) : "Sob consulta"}
                       </span>
-                      <button
-                        onClick={() => setPreview({ kind: "shopify", data: { product: mockProduct, variantIdx: 0 } })}
-                        style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, fontWeight: 600, color: "#C9A220", background: "none", border: "none", cursor: "pointer", padding: 0, whiteSpace: "nowrap" }}
-                      >
-                        Ver →
-                      </button>
                     </div>
+                    <button
+                      onClick={() => setPreview({ kind: "shopify", data: { product: mockProduct, variantIdx: 0 } })}
+                      style={{
+                        width: "100%",
+                        fontFamily: "'Inter',sans-serif",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.05em",
+                        color: "#1C1814",
+                        background: "none",
+                        border: "1px solid rgba(28,24,20,0.15)",
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        transition: "all 0.2s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 4
+                      }}
+                      onMouseEnter={e => {
+                        const target = e.currentTarget as HTMLElement;
+                        target.style.background = "#1C1814";
+                        target.style.color = "#F8F5F0";
+                        target.style.borderColor = "#1C1814";
+                      }}
+                      onMouseLeave={e => {
+                        const target = e.currentTarget as HTMLElement;
+                        target.style.background = "none";
+                        target.style.color = "#1C1814";
+                        target.style.borderColor = "rgba(28,24,20,0.15)";
+                      }}
+                    >
+                      Ver detalhes →
+                    </button>
                   </div>
                 </div>
               );
@@ -422,20 +514,60 @@ export const ProductShowcase = () => {
                   </div>
                 </div>
                 <div style={{ padding: "14px 16px 16px" }}>
-                  <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, fontWeight: 400, color: "#1C1814", marginBottom: 2 }}>{nome}</div>
-                  <div style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, color: "#6B5E52", display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: isGold(mat) ? "linear-gradient(135deg,#C9A220,#E8C84A)" : "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block" }} />
-                    {mat}
+                  <div style={{ height: 68, display: "flex", flexDirection: "column", justifyContent: "flex-start", marginBottom: 8 }}>
+                    <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, fontWeight: 400, color: "#1C1814", marginBottom: 2 }}>{nome}</div>
+                    <div style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, color: "#6B5E52", display: "flex", flexDirection: "column", gap: 2, marginTop: 4 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                        <div style={{ display: "flex", gap: 2 }}>
+                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#C9A220,#E8C84A)", display: "inline-block" }} />
+                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block" }} />
+                        </div>
+                        Ouro 18k / Prata
+                      </div>
+                      <span style={{ fontSize: 9.5, color: "#C9A220", fontWeight: 600, letterSpacing: "0.03em" }}>Corrente + Pingente</span>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ marginBottom: 12 }}>
                     <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, color: "#C9A220" }}>
                       {preco ? fmtBRL(String(preco)) : "Sob consulta"}
                     </span>
-                    <a href={WPP} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
-                      style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, fontWeight: 600, color: "#C9A220" }}>
-                      Pedir →
-                    </a>
                   </div>
+                  <button
+                    onClick={() => setPreview({ kind: "static", data: { img, nome, mat, preco } })}
+                    style={{
+                      width: "100%",
+                      fontFamily: "'Inter',sans-serif",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: "0.05em",
+                      color: "#1C1814",
+                      background: "none",
+                      border: "1px solid rgba(28,24,20,0.15)",
+                      borderRadius: 8,
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4
+                    }}
+                    onMouseEnter={e => {
+                      const target = e.currentTarget as HTMLElement;
+                      target.style.background = "#1C1814";
+                      target.style.color = "#F8F5F0";
+                      target.style.borderColor = "#1C1814";
+                    }}
+                    onMouseLeave={e => {
+                      const target = e.currentTarget as HTMLElement;
+                      target.style.background = "none";
+                      target.style.color = "#1C1814";
+                      target.style.borderColor = "rgba(28,24,20,0.15)";
+                    }}
+                  >
+                    Ver detalhes →
+                  </button>
                 </div>
               </div>
             ))}
@@ -457,17 +589,31 @@ export const ProductShowcase = () => {
             >
               <img src={img} alt={`${nome} ${mat}`} style={{ width: "100%", display: "block", objectFit: "cover" }} />
               <div style={{ padding: "20px 24px 24px", borderTop: "1px solid rgba(28,24,20,0.07)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: preco ? 16 : 0 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                   <div>
                     <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 400, color: "#1C1814", marginBottom: 4 }}>{nome}</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, color: isGold(mat) ? "#C9A220" : "#6B5E52" }}>
-                      <span style={{ width: 9, height: 9, borderRadius: "50%", background: isGold(mat) ? "linear-gradient(135deg,#C9A220,#E8C84A)" : "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block" }} />
-                      {mat}
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, color: "#C9A220" }}>
+                      <div style={{ display: "flex", gap: 2 }}>
+                        <span style={{ width: 9, height: 9, borderRadius: "50%", background: "linear-gradient(135deg,#C9A220,#E8C84A)", display: "inline-block" }} />
+                        <span style={{ width: 9, height: 9, borderRadius: "50%", background: "linear-gradient(135deg,#A0A0A0,#D4D4D4)", display: "inline-block" }} />
+                      </div>
+                      Ouro 18k / Prata
                     </div>
                   </div>
                   <button onClick={() => setPreview(null)} style={{ width: 36, height: 36, borderRadius: 10, border: "1.5px solid rgba(28,24,20,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B5E52", flexShrink: 0, cursor: "pointer", background: "none" }}>
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
+                </div>
+                
+                {/* Badge Corrente + Pingente */}
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "rgba(28,24,20,0.04)", border: "1px solid rgba(28,24,20,0.15)", borderRadius: 8, padding: "8px 14px", marginBottom: preco ? 16 : 20 }}>
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#1C1814" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M8 12h8M12 8v8" />
+                  </svg>
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#1C1814" }}>
+                    Conjunto: Corrente + Pingente
+                  </span>
                 </div>
                 {preco && (
                   <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 20 }}>
@@ -496,29 +642,6 @@ export const ProductShowcase = () => {
         const { product, variantIdx } = preview.data;
         const node = product.node;
         let variants = node.variants.edges;
-        const lowerHandle = node.handle.toLowerCase();
-        const lowerTitle = node.title.toLowerCase();
-        const isGoldOnlyProduct = 
-          lowerHandle === "trion-elite" || 
-          lowerTitle.includes("trion elite") || 
-          lowerHandle === "velarion" || 
-          lowerTitle.includes("velarion") ||
-          lowerHandle === "imperium" || 
-          lowerTitle.includes("imperium") ||
-          lowerHandle === "dominus" || 
-          lowerTitle.includes("dominus") ||
-          lowerHandle === "monarch" || 
-          lowerTitle.includes("monarch") ||
-          lowerHandle === "valenza" || 
-          lowerTitle.includes("valenza");
-          
-        if (isGoldOnlyProduct) {
-          variants = variants.filter(ve => {
-            const v = ve.node;
-            const mat = (v.selectedOptions.find(o => o.name.toLowerCase().includes("material") || o.name.toLowerCase().includes("tipo"))?.value ?? v.title).toLowerCase();
-            return !mat.includes("prata");
-          });
-        }
         const selectedVariant = variants[variantIdx]?.node;
         const img = node.images?.edges?.[0]?.node?.url ?? "";
         const hasVariants = node.variants.edges.length > 1;
@@ -643,7 +766,7 @@ export const ProductShowcase = () => {
                     ];
                   } else if (isVelox) {
                     thumbs = [
-                      { src: linhaVeloxOuro,  alt: "OURO 18K"  },
+                      { src: veloxRoyaleOuroMasc,  alt: "OURO 18K"  },
                       { src: linhaVeloxPrata, alt: "PRATA 925" },
                     ];
                   } else {
@@ -692,14 +815,26 @@ export const ProductShowcase = () => {
                   <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 300, color: "#6B5E52", lineHeight: 1.75, marginBottom: 16 }}>{node.description}</p>
                 )}
 
-                {/* Tamanho do pingente */}
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "rgba(201,162,32,0.08)", border: "1px solid rgba(201,162,32,0.30)", borderRadius: 8, padding: "8px 14px", marginBottom: 24 }}>
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#C9A220" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 3 3 21" /><path d="M3 8V3h5" /><path d="M21 16v5h-5" />
-                  </svg>
-                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#9a7c16" }}>
-                    Tamanho do pingente: 2,5 cm
-                  </span>
+                {/* Detalhes do Conjunto e Tamanho */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "rgba(28,24,20,0.04)", border: "1px solid rgba(28,24,20,0.15)", borderRadius: 8, padding: "8px 14px" }}>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#1C1814" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M8 12h8M12 8v8" />
+                    </svg>
+                    <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#1C1814" }}>
+                      Conjunto: Corrente + Pingente
+                    </span>
+                  </div>
+                  
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "rgba(201,162,32,0.08)", border: "1px solid rgba(201,162,32,0.30)", borderRadius: 8, padding: "8px 14px" }}>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#C9A220" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 3 3 21" /><path d="M3 8V3h5" /><path d="M21 16v5h-5" />
+                    </svg>
+                    <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#9a7c16" }}>
+                      Tamanho do pingente: 2,5 cm
+                    </span>
+                  </div>
                 </div>
 
                 <div style={{ marginTop: "auto" }}>
@@ -736,7 +871,7 @@ export const ProductShowcase = () => {
                                   if (handleLb === "halter") {
                                     overrideImg = isPrataLb ? linhaHalterPrata : linhaHalterOuro;
                                   } else if (handleLb.includes("velox")) {
-                                    overrideImg = isPrataLb ? linhaVeloxPrata : linhaVeloxOuro;
+                                    overrideImg = isPrataLb ? linhaVeloxPrata : veloxRoyaleOuroMasc;
                                   }
                                   setPreview({ kind: "shopify", data: { product, variantIdx: vi, overrideImage: overrideImg } });
                                 }}
@@ -770,8 +905,8 @@ export const ProductShowcase = () => {
                     let parcelas: string | null = null;
                     if (isHalterLb) {
                       if (isPrataLb) {
-                        displayPrice = "2510.64";
-                        parcelas = "em até 6x de R$ 418,44";
+                        displayPrice = "297";
+                        parcelas = "em até 3x de R$ 99,00";
                       } else {
                         displayPrice = "3487";
                         parcelas = "em até 10x de R$ 348,70";

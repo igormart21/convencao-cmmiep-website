@@ -16,6 +16,7 @@ import bgCiclismo from "@/assets/fundo-card-ciclismo.png";
 import bgFisiculturismo from "@/assets/fundo-card-fisiculturismo.png";
 import crossfitImperiumCard from "@/assets/crossfit-imperium-card.png";
 import crossfitStrataCard from "@/assets/crossfit-strata-card.png";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Override por modalidade → linha → imagem do card
 const CARD_IMAGE_OVERRIDE: Record<string, Record<string, string>> = {
@@ -37,6 +38,7 @@ const AtelieModalidade = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const modalidade = MODALIDADES.find((m) => m.slug === slug);
+  const { t } = useLanguage();
 
   const linhas = (modalidade?.linhas ?? [])
     .map((id) => LINHAS[id])
@@ -90,13 +92,13 @@ const AtelieModalidade = () => {
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white/70 hover:text-[#d4af37] transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Modalidades
+            {t("atelie.modalidades.back")}
           </Link>
           <span
             className="hidden md:block font-display italic text-sm tracking-[0.3em]"
             style={{ color: "#d4af37" }}
           >
-            {modalidade.nome.toUpperCase()}
+            {t(`sport.${modalidade.slug}`).toUpperCase()}
           </span>
           <span className="w-16" />
         </div>
@@ -128,7 +130,7 @@ const AtelieModalidade = () => {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.10) 28%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.10) 72%, rgba(0,0,0,0.55) 100%)",
+                  "linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.10) 28%, rgba(0,0,0,0.06) 48%, rgba(0,0,0,0.55) 82%, rgba(0,0,0,0.95) 100%)",
               }}
             />
             <div
@@ -209,7 +211,7 @@ const AtelieModalidade = () => {
                 ? "Endurance Collection"
                 : modalidade.slug === "fisiculturismo"
                 ? "Sculpture Collection"
-                : "Assinaturas"}
+                : t("atelie.welcome.badge")}
             </p>
             <h2
               className="font-display font-extralight"
@@ -221,10 +223,10 @@ const AtelieModalidade = () => {
               }}
             >
               {modalidade.slug === "triathlon"
-                ? "O Ateliê Triatlo"
+                ? t("atelie.modalidade.select_line")
                 : modalidade.slug === "fisiculturismo"
-                ? "Explore outras interpretações da disciplina."
-                : `As linhas de ${modalidade.nome.toLowerCase()}`}
+                ? t("atelie.modalidade.explore")
+                : `${t("atelie.modalidade.explore")} ${t(`sport.${modalidade.slug}`).toLowerCase()}`}
             </h2>
             {modalidade.slug === "fisiculturismo" && (
               <p
@@ -309,7 +311,7 @@ const AtelieModalidade = () => {
                 >
                   <img
                     src={CARD_IMAGE_OVERRIDE[modalidade.slug]?.[l.slug] ?? l.imagens.ouro}
-                    alt={l.nome}
+                    alt={t(`line.${l.slug}.nome`)}
                     loading="lazy"
                     decoding="async"
                     className={`${l.cardFit === "contain" ? "max-w-full max-h-full object-contain" : "w-full h-full object-cover"} transition-transform duration-[1400ms] ease-out group-hover:scale-[1.02]`}
@@ -346,7 +348,7 @@ const AtelieModalidade = () => {
                     textTransform: "uppercase",
                   }}
                 >
-                  {l.nome}
+                  {t(`line.${l.slug}.nome`)}
                 </h3>
                 <p
                   className="mt-2 italic font-light"
@@ -357,7 +359,7 @@ const AtelieModalidade = () => {
                     letterSpacing: "0.04em",
                   }}
                 >
-                  {l.assinatura}
+                  {t(`line.${l.slug}.assinatura`)}
                 </p>
                 <button
                   type="button"
@@ -393,7 +395,7 @@ const AtelieModalidade = () => {
                   }}
                 >
                   <span className="h-px w-4" style={{ background: "currentColor" }} />
-                  Explorar linha
+                  {t("atelie.welcome.enter")}
                   <span className="h-px w-4" style={{ background: "currentColor" }} />
                 </button>
               </div>

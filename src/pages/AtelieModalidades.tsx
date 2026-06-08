@@ -5,6 +5,7 @@ import { MODALIDADES } from "@/data/atelie";
 import { useIsMobile } from "@/hooks/use-mobile";
 import heroBg from "@/assets/atelie-modalidades-hero-artisan.jpg";
 import logo3R from "@/assets/logo-3r-fitness.png";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Mobile-aware crop positioning to keep athlete + jewelry in frame
 const FOCUS: Record<string, { desktop: string; mobile: string }> = {
@@ -31,6 +32,7 @@ const ModalidadeSection = ({
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [visible, setVisible] = useState(false);
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const el = ref.current;
@@ -85,7 +87,7 @@ const ModalidadeSection = ({
       <img
         ref={imgRef}
         src={m.img}
-        alt={m.nome}
+        alt={t(`sport.${m.slug}`)}
         loading="lazy"
         decoding="async"
         fetchPriority={index === 0 ? "high" : "low"}
@@ -168,7 +170,7 @@ const ModalidadeSection = ({
                 "opacity 600ms ease-out 500ms, transform 600ms ease-out 500ms, letter-spacing 700ms ease-out 500ms",
             }}
           >
-            {String(index + 1).padStart(2, "0")} — MODALIDADE
+            {String(index + 1).padStart(2, "0")} — {t("atelie.welcome.enter")}
           </span>
           <div
             className="h-px mb-8"
@@ -192,7 +194,7 @@ const ModalidadeSection = ({
                 "opacity 800ms ease-out 500ms, transform 900ms ease-out 500ms, letter-spacing 1000ms ease-out 500ms",
             }}
           >
-            {m.nome}
+            {t(`sport.${m.slug}`)}
           </h2>
           <p
             className="mt-6 italic font-light"
@@ -207,7 +209,7 @@ const ModalidadeSection = ({
               transition: "opacity 700ms ease-out 750ms, transform 700ms ease-out 750ms",
             }}
           >
-            {m.subtitulo}
+            {t(`sport.${m.slug}.sub`)}
           </p>
 
           <button
@@ -230,7 +232,7 @@ const ModalidadeSection = ({
                 paddingBottom: 6,
               }}
             >
-              EXPLORAR MODALIDADE
+              {t("atelie.modalidade.explore")}
             </span>
             <span
               className="h-px transition-all duration-500 group-hover/btn:w-12"
@@ -251,6 +253,7 @@ const AtelieModalidades = () => {
 
   const [progress, setProgress] = useState(0); // 0 → 1 across first viewport
   const [isFading, setIsFading] = useState(false);
+  const { t } = useLanguage();
 
   const navigateWithFade = (slug: string) => {
     setIsFading(true);
@@ -356,13 +359,13 @@ const AtelieModalidades = () => {
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white/70 hover:text-[#d4af37] transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Ateliê
+            {t("nav.atelier")}
           </Link>
           <span
             className="hidden md:block font-display italic text-sm tracking-[0.3em]"
             style={{ color: "#d4af37" }}
           >
-            MODALIDADES
+            {t("atelie.modalidades.title")}
           </span>
           <span className="w-16" />
         </div>
@@ -579,9 +582,9 @@ const AtelieModalidades = () => {
                 requestAnimationFrame(step);
               }}
               className="atelie-cta-premium"
-              aria-label="Explorar Modalidades"
+              aria-label={t("atelie.modalidades.title")}
             >
-              Explorar Modalidades
+              {t("atelie.modalidades.title")}
             </button>
           </div>
         </div>
@@ -608,7 +611,7 @@ const AtelieModalidades = () => {
           className="font-display italic text-sm tracking-[0.3em]"
           style={{ color: "#d4af37" }}
         >
-          ATELIÊ
+          {t("nav.atelier")}
         </span>
       </footer>
 

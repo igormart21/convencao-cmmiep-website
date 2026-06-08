@@ -5,6 +5,7 @@ import { getVariantId } from "@/lib/shopifyVariants";
 import { ArrowLeft } from "lucide-react";
 import { LINHAS, MODALIDADES, type Material, type Forma } from "@/data/atelie";
 import SelecaoPanel from "@/components/atelie/SelecaoPanel";
+import { useLanguage } from "@/context/LanguageContext";
 import vigorMasculino from "@/assets/linha-vigor-masculino.jpg";
 import vigorMasculinoPrata from "@/assets/linha-vigor-masculino-prata.jpg";
 import veloxRoyaleOuroMasc from "@/assets/linha-velox-royale-ouro-masculino.jpg";
@@ -12,7 +13,7 @@ import veloxRoyaleOuroFem from "@/assets/linha-velox-royale-ouro-feminino.jpg";
 import veloxRoyalePrataMasc from "@/assets/linha-velox-royale-prata-masculino.jpg";
 import veloxRoyalePrataFem from "@/assets/linha-velox-royale-prata-feminino.jpg";
 import aeronPrataMasc from "@/assets/linha-aeron-prata-masculino.jpg";
-import aeronPrataFem from "@/assets/linha-aeron-prata-feminino.jpg";
+import aeronPrataFem from "@/assets/aeron-atleta-fem-prata.jpg";
 import strataOuro from "@/assets/linha-strata-ouro.jpg";
 import strataPrata from "@/assets/linha-strata-prata.jpg";
 import imperiumOuro from "@/assets/linha-imperium-ouro.jpg";
@@ -33,6 +34,7 @@ const FLOATING_PENDANTS: Record<string, { ouro: string; prata: string }> = {
 // Mapa de slug da linha → handle do produto Shopify (importado pelo Storefront API).
 
 const AtelieLinha = () => {
+  const { t } = useLanguage();
   const { slug } = useParams();
   const linha = slug ? LINHAS[slug] : undefined;
 
@@ -448,13 +450,13 @@ const AtelieLinha = () => {
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white/70 hover:text-[#d4af37] transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            {parentModalidade ? parentModalidade.nome : "Modalidades"}
+            {parentModalidade ? t("sport." + parentModalidade.slug) : t("atelie.modalidades.back")}
           </Link>
           <span
             className="hidden md:block font-display italic text-sm tracking-[0.3em]"
             style={{ color: "#d4af37" }}
           >
-            {linha.nome}
+            {t("line." + linha.slug + ".nome")}
           </span>
           <span className="w-16" />
         </div>
@@ -540,7 +542,7 @@ const AtelieLinha = () => {
                 className="text-[10px] uppercase tracking-[0.5em] mb-3"
                 style={{ color: "rgba(212,175,55,0.75)" }}
               >
-                Etapa 03 · Linha autoral
+                {t("atelie.linha.step_badge")}
               </p>
               <h1
                 className="font-display font-light leading-none"
@@ -550,7 +552,7 @@ const AtelieLinha = () => {
                   color: "#f4ead0",
                 }}
               >
-                {linha.nome}
+                {t("line." + linha.slug + ".nome")}
               </h1>
               <p
                 className="mt-3 italic font-light"
@@ -561,7 +563,7 @@ const AtelieLinha = () => {
                   letterSpacing: "0.06em",
                 }}
               >
-                {linha.assinatura}
+                {t("line." + linha.slug + ".assinatura")}
               </p>
 
               <div
@@ -580,25 +582,25 @@ const AtelieLinha = () => {
                   fontFamily: '"Fraunces",serif',
                 }}
               >
-                {linha.frase}
+                {t("line." + linha.slug + ".frase")}
               </p>
 
               <div className="mt-7 space-y-6">
                 <Selector
-                  label="Material"
+                  label={t("atelie.linha.material")}
                   options={[
-                    { value: "ouro", label: "Ouro 18K" },
-                    { value: "prata", label: "Prata 925" },
+                    { value: "ouro", label: t("atelie.linha.material.ouro") },
+                    { value: "prata", label: t("atelie.linha.material.prata") },
                   ]}
                   value={material}
                   onChange={(v) => setMaterial(v as Material)}
                 />
                 {showFormaSelector && (
                   <Selector
-                    label="Forma"
+                    label={t("atelie.linha.gender")}
                     options={[
-                      { value: "masculino", label: "masculino" },
-                      { value: "feminino", label: "feminina" },
+                      { value: "masculino", label: t("atelie.linha.gender.masc") },
+                      { value: "feminino", label: t("atelie.linha.gender.fem") },
                     ]}
                     value={forma}
                     onChange={(v) => setForma(v as Forma)}
@@ -630,7 +632,7 @@ const AtelieLinha = () => {
                   }}
                 >
                   <span className="h-px w-5" style={{ background: "currentColor" }} />
-                  {variantDisponivel ? "Selecionar minha peça" : "Em breve"}
+                  {variantDisponivel ? t("atelie.linha.btn.select") : t("atelie.linha.btn.coming_soon")}
                   <span className="h-px w-5" style={{ background: "currentColor" }} />
                 </button>
               </div>
@@ -652,8 +654,8 @@ const AtelieLinha = () => {
         open={panelOpen}
         onOpenChange={setPanelOpen}
         variantId={variantId}
-        linhaNome={linha.nome}
-        modalidadeNome={parentModalidade?.nome}
+        linhaNome={t("line." + linha.slug + ".nome")}
+        modalidadeNome={parentModalidade ? t("sport." + parentModalidade.slug) : undefined}
         modalidadeSlug={parentModalidade?.slug}
         material={material}
         imagem={imgSrc}
