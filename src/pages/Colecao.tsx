@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ShoppingBag, Zap, Loader2, ChevronRight } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Zap, Loader2, ChevronRight, Home, User } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { useCartStore } from "@/stores/cartStore";
 import { useCartUIStore } from "@/stores/cartUIStore";
@@ -43,7 +43,7 @@ import wodOuro from "@/assets/linha-wod-ouro.jpeg";
 import wodPrata from "@/assets/linha-wod-prata.jpeg";
 import eliteCrossOuro from "@/assets/linha-elite-ouro.jpeg";
 import eliteCrossPrata from "@/assets/linha-elite-prata.jpeg";
-import veloxOuro     from "@/assets/linha-velox-ouro.png";
+import veloxOuro     from "@/assets/velox-royale-ouro-novo.jpg";
 import veloxPrata    from "@/assets/linha-velox-royale-prata-masculino.jpg";
 import veloxFemSpeedOuro from "@/assets/linha-velox-royale-ouro-feminino-speed.jpg";
 import veloxFemSpeedPrata from "@/assets/linha-velox-royale-prata-feminino-speed.jpg";
@@ -163,7 +163,7 @@ const COLECOES = [
   { n:"11B", name:"Ritmo",       handle:"ritmo",     sport:"Corrida", img:passadaJoia,       imgPrata:ritmoJoia,             desc:"A constância e a determinação do ritmo perfeito esculpidos em joia." },
   { n:"21", name:"Clássico Masc",    handle:"titan",     sport:"Corrida", img:bonecoCorrMascClassicoOuro, imgPrata:bonecoCorrMascClassicoPrata, desc:"Resistência e foco representados em joia exclusiva." },
   { n:"22", name:"Clássico Fem",     handle:"velocita",  sport:"Corrida", img:bonecoCorrFemClassicoOuro,  imgPrata:bonecoCorrFemClassicoPrata,  desc:"Leveza, ritmo e elegância em cada detalhe." },
-  { n:"12", name:"Trion Elite",  handle:"trion-elite",  sport:"Triatlo",        img:trionOuro,    imgPrata:trionOuro,     desc:"Para atletas que vivem além dos limites comuns.", imgFilterPrata:"grayscale(100%) brightness(1.15) contrast(1.05)", skipPrata: true },
+  { n:"12", name:"Trion Elite",  handle:"trion-elite",  sport:"Triatlo",        img:trionOuro,    imgPrata:placaTriatloPrata,     desc:"TRION ÉLITE Criada para atletas que vivem além dos limites comuns, a linha TRION ÉLITE representa a união perfeita entre resistência, precisão e presença. Inspirada na intensidade do triathlon, cada peça carrega a essência da disciplina absoluta — mente forte, corpo preparado e espírito inabalável. Minimalista. Técnica. Atemporal. Desenvolvida artesanalmente em versões Ouro 18k e Prata 925, TRION ÉLITE foi criada para quem transforma esforço extremo em identidade. Não é apenas uma joia. É um símbolo de permanência entre os que suportam o impossível. TRION ÉLITE. Para atletas que nasceram para atravessar distâncias que poucos suportam.", skipPrata: true },
   { n:"13", name:"Velarion",     handle:"velarion",     sport:"Triatlo",        img:velarionOuro,  desc:"Luxo silencioso. Performance elevada.", skipPrata: true },
   { n:"13B", name:"Placa Triatlo", handle:"placa-triatlo", sport:"Triatlo", img:placaTriatloOuro, imgPrata:placaTriatloPrata, desc:"Placa exclusiva com as três modalidades do Triatlo esculpidas em ouro 18k ou prata 925." },
   { n:"26", name:"Clássico Masc", handle:"trion-elite", sport:"Triatlo",  img:bonecoTriMascClassicoOuro, imgPrata:bonecoTriMascClassicoPrata, desc:"Resistência, força e elegância em três modalidades." },
@@ -180,6 +180,9 @@ const COLECOES = [
 ];
 
 const SPORTS = ["Todas", "Musculação", "Fisiculturismo", "Crossfit", "Ciclismo", "Corrida", "Triatlo", "Colares", "Anéis", "Brincos"];
+// Categorias ocultas no site (mantidas no código para uso futuro). Ex.: Anéis.
+const HIDDEN_SPORTS = ["Anéis"];
+const VISIBLE_SPORTS = SPORTS.filter((s) => !HIDDEN_SPORTS.includes(s));
 
 type TipoJoia = "Pingentes" | "Colares" | "Anéis" | "Brincos";
 type MaterialFiltro = "Prata 925" | "Ouro 18k";
@@ -686,10 +689,9 @@ const ColecaoCard = ({ col, onClick }: { col: ColItem; onClick: () => void }) =>
 const PRECO_OURO  = 1497; // preço real no Shopify (variante HALTER Ouro 18k)
 const PRECO_PRATA = 347;
 
-// GIDs das variantes do produto "Pingente Personalizado" no Shopify.
-// Você pode substituir pelos GIDs reais criados no seu Shopify Admin para atualizar os preços.
-const VARIANT_ID_OURO_PERS = "gid://shopify/ProductVariant/48912055468259"; // GID placeholder para Ouro
-const VARIANT_ID_PRATA_PERS = "gid://shopify/ProductVariant/48912055501027"; // GID placeholder para Prata
+// Variantes do produto "Joia Personalizada" na Shopify (handle: joia-personalizada)
+const VARIANT_ID_OURO_PERS = "gid://shopify/ProductVariant/49253071290595"; // Ouro 18k
+const VARIANT_ID_PRATA_PERS = "gid://shopify/ProductVariant/49253071323363"; // Prata 925
 
 const getPersonalizadoProductMock = (material: "ouro" | "prata", imageUrl: string): ShopifyProduct => {
   const isOuro = material === "ouro";
@@ -699,7 +701,7 @@ const getPersonalizadoProductMock = (material: "ouro" | "prata", imageUrl: strin
   return {
     node: {
       id: "gid://shopify/Product/Personalizado",
-      title: `Pingente Personalizado (IA - ${isOuro ? "Ouro 18k" : "Prata 925"})`,
+      title: "Joia Personalizada",
       description: "Você acabou de eternizar sua paixão com uma joia exclusiva gerada por IA.",
       handle: "pingente-personalizado-ia",
       featuredImage: {
@@ -778,6 +780,7 @@ const PersonalizarIA = () => {
   const [erroMsg, setErroMsg]         = useState<string>("");
   const [estado, setEstado]           = useState<"idle" | "gerando" | "pronto" | "erro">("idle");
   const [resultado, setResultado]     = useState<string | null>(null);
+  const [storageUrl, setStorageUrl]   = useState<string | null>(null);
   const [comprando, setComprando]     = useState(false);
   const [adicionando, setAdicionando] = useState(false);
   const [adicionado, setAdicionado]   = useState(false);
@@ -795,13 +798,13 @@ const PersonalizarIA = () => {
     const reader = new FileReader();
     reader.onload = ev => setFoto(ev.target?.result as string);
     reader.readAsDataURL(file);
-    setResultado(null); setEstado("idle"); setAdicionado(false);
+    setResultado(null); setStorageUrl(null); setEstado("idle"); setAdicionado(false);
   };
 
   const handleGerar = async () => {
     console.log("[gerar-joia] handleGerar chamado, foto:", foto ? `${(foto.length/1024).toFixed(0)}KB` : "null");
     if (!foto) { console.warn("[gerar-joia] foto é null, abortando"); return; }
-    setEstado("gerando"); setResultado(null); setAdicionado(false); setErroMsg("");
+    setEstado("gerando"); setResultado(null); setStorageUrl(null); setAdicionado(false); setErroMsg("");
     setSegundos(0); setMsgIdx(0);
     timerRef.current = setInterval(() => {
       setSegundos(s => {
@@ -821,7 +824,7 @@ const PersonalizarIA = () => {
       const data = await res.json();
       console.log("[gerar-joia] JSON parseado, keys:", Object.keys(data), "imageUrl?", !!data.imageUrl);
       if (data.error) throw new Error(data.error);
-      setResultado(data.imageUrl); setEstado("pronto");
+      setResultado(data.imageUrl); setStorageUrl(data.storageUrl ?? null); setEstado("pronto");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
       console.error("[gerar-joia] ERRO:", msg);
@@ -830,6 +833,14 @@ const PersonalizarIA = () => {
     } finally {
       if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
     }
+  };
+
+  // `_imagem_url` (underscore) fica oculta para o cliente, mas visível no pedido do admin.
+  const buildJoiaAttributes = (): Array<{ key: string; value: string }> => {
+    const url = storageUrl ?? (resultado?.startsWith("http") ? resultado : null);
+    const attrs = [{ key: "Joia", value: "Personalizada por IA" }];
+    if (url) attrs.push({ key: "_imagem_url", value: url });
+    return attrs;
   };
 
   const handleAddCart = async () => {
@@ -849,6 +860,7 @@ const PersonalizarIA = () => {
         quantity: 1,
         selectedOptions: [{ name: "Material", value: isOuro ? "Ouro 18k" : "Prata 925" }],
         thumbnailImage: thumb,
+        attributes: buildJoiaAttributes(),
       });
       // força a imagem gerada no carrinho (Shopify sobrescreve com a do produto)
       patchItem(variantId, { thumbnailImage: thumb, product: mockProduct, price: { amount: priceAmt, currencyCode: "BRL" } });
@@ -869,7 +881,7 @@ const PersonalizarIA = () => {
     try {
       const isOuro    = material === "ouro";
       const variantId = isOuro ? VARIANT_ID_OURO_PERS : VARIANT_ID_PRATA_PERS;
-      const r = await createShopifyCart({ variantId, quantity: 1 });
+      const r = await createShopifyCart({ variantId, quantity: 1, attributes: buildJoiaAttributes() });
       if (r?.checkoutUrl) {
         window.location.href = r.checkoutUrl;
       } else {
@@ -1368,7 +1380,7 @@ const Colecao = () => {
   }, []);
   const sportParam = searchParams.get("sport");
   const activeSport =
-    sportParam && SPORTS.includes(sportParam)
+    sportParam && VISIBLE_SPORTS.includes(sportParam)
       ? sportParam
       : "Fisiculturismo";
   const heroImage = activeSport === "Todas" ? colecoesHero : (HERO_BY_SPORT[activeSport] ?? colecoesHero);
@@ -1438,7 +1450,7 @@ const Colecao = () => {
       velocita: 399.9,
       sprint: 297.0,
       ritmo: 2187.0,
-      "trion-elite": 2687.0,
+      "trion-elite": 4387.0,
       velarion: 2497.0,
       triade: 899.9,
       cartier: 1700.0,
@@ -1530,8 +1542,8 @@ const Colecao = () => {
 
   const produtosFiltrados = useMemo(() => {
     let result = activeSport === "Todas"
-      ? [...catalogProducts]
-      : catalogProducts.filter((p) => p.categoria === activeSport);
+      ? catalogProducts.filter((p) => !HIDDEN_SPORTS.includes(p.categoria))
+      : catalogProducts.filter((p) => p.categoria === activeSport && !HIDDEN_SPORTS.includes(p.categoria));
     if (tipos.length) result = result.filter((p) => tipos.includes(p.tipo));
     if (materiais.length) result = result.filter((p) => materiais.includes(p.material));
 
@@ -1544,10 +1556,13 @@ const Colecao = () => {
   // Reset filtros ao trocar de esporte
   useEffect(() => { setTipos([]); setMateriais([]); }, [activeSport]);
 
-  // Tipos disponíveis no esporte atual
+  // Tipos disponíveis no esporte atual (excluindo categorias ocultas, ex.: Anéis)
   const tiposDisponiveis = useMemo(() => {
-    const base = activeSport === "Todas" ? catalogProducts : catalogProducts.filter(p => p.categoria === activeSport);
-    return (["Pingentes", "Colares", "Anéis", "Brincos"] as TipoJoia[]).filter(t => base.some(p => p.tipo === t));
+    const visibles = catalogProducts.filter(p => !HIDDEN_SPORTS.includes(p.categoria));
+    const base = activeSport === "Todas" ? visibles : visibles.filter(p => p.categoria === activeSport);
+    return (["Pingentes", "Colares", "Anéis", "Brincos"] as TipoJoia[])
+      .filter(t => t !== "Anéis")
+      .filter(t => base.some(p => p.tipo === t));
   }, [activeSport, catalogProducts]);
 
   const toggleTipo = (tipo: TipoJoia) => {
@@ -1615,29 +1630,52 @@ const Colecao = () => {
     <div style={{ minHeight: "100vh", background: "#f7f7f7", color: "#1c1c1c" }}>
       <header style={{ background: "#fff", borderBottom: "1px solid #e8e8e8" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", height: 160, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", color: "#555", fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            <ArrowLeft size={13} strokeWidth={1.5} /> Início
-          </Link>
           <Link to="/" style={{ display: "flex", alignItems: "center" }}>
             <img src={logo3r} alt="3R Fitness" style={{ height: 140, width: "auto", objectFit: "contain" }} />
           </Link>
-          <button
-            onClick={openCart}
-            aria-label="Carrinho"
-            style={{ position: "relative", width: 42, height: 42, borderRadius: 10, border: "1.5px solid rgba(28,24,20,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#1C1814", background: "none", cursor: "pointer", transition: "border-color 0.25s, color 0.25s" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#C9A220"; (e.currentTarget as HTMLElement).style.color = "#C9A220"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(28,24,20,0.15)"; (e.currentTarget as HTMLElement).style.color = "#1C1814"; }}
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            {totalItems > 0 && (
-              <span style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, borderRadius: 100, background: "#C9A220", color: "#fff", fontFamily: "'Inter',sans-serif", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>
-                {totalItems}
-              </span>
-            )}
-          </button>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* Início */}
+            <Link
+              to="/"
+              aria-label="Início"
+              style={{ width: 42, height: 42, borderRadius: 10, border: "1.5px solid rgba(28,24,20,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#1C1814", background: "none", cursor: "pointer", transition: "border-color 0.25s, color 0.25s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#C9A220"; (e.currentTarget as HTMLElement).style.color = "#C9A220"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(28,24,20,0.15)"; (e.currentTarget as HTMLElement).style.color = "#1C1814"; }}
+            >
+              <Home size={18} strokeWidth={1.75} />
+            </Link>
+
+            {/* Conta */}
+            <Link
+              to="/auth"
+              aria-label="Conta"
+              style={{ width: 42, height: 42, borderRadius: 10, border: "1.5px solid rgba(28,24,20,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#1C1814", background: "none", cursor: "pointer", transition: "border-color 0.25s, color 0.25s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#C9A220"; (e.currentTarget as HTMLElement).style.color = "#C9A220"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(28,24,20,0.15)"; (e.currentTarget as HTMLElement).style.color = "#1C1814"; }}
+            >
+              <User size={18} strokeWidth={1.75} />
+            </Link>
+
+            {/* Carrinho */}
+            <button
+              onClick={openCart}
+              aria-label="Carrinho"
+              style={{ position: "relative", width: 42, height: 42, borderRadius: 10, border: "1.5px solid rgba(28,24,20,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#1C1814", background: "none", cursor: "pointer", transition: "border-color 0.25s, color 0.25s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#C9A220"; (e.currentTarget as HTMLElement).style.color = "#C9A220"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(28,24,20,0.15)"; (e.currentTarget as HTMLElement).style.color = "#1C1814"; }}
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              {totalItems > 0 && (
+                <span style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, borderRadius: 100, background: "#C9A220", color: "#fff", fontFamily: "'Inter',sans-serif", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>
+                  {totalItems}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1662,7 +1700,7 @@ const Colecao = () => {
         </div>
 
         <div style={{ marginBottom: 18, display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {SPORTS.map((s) => {
+          {VISIBLE_SPORTS.map((s) => {
             const ativo = s === activeSport;
             return (
               <button key={s} onClick={() => setSearchParams({ sport: s })} style={{ padding: "8px 14px", borderRadius: 100, border: ativo ? "1px solid #1f1f1f" : "1px solid #d5d5d5", background: ativo ? "#1f1f1f" : "#fff", color: ativo ? "#fff" : "#666", fontSize: 11, fontFamily: "'Inter',sans-serif", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer" }}>
@@ -1932,13 +1970,25 @@ const Colecao = () => {
                   </>
                 );
               })()}
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "#f6f1e3", border: "1px solid #e6d9b0", borderRadius: 8, padding: "8px 14px", marginBottom: 18 }}>
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#9a7c16" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 3 3 21" /><path d="M3 8V3h5" /><path d="M21 16v5h-5" />
-                </svg>
-                <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#7a6310" }}>
-                  {t("product.size_details")}
-                </span>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start", marginBottom: 18 }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#f6f1e3", border: "1px solid #e6d9b0", borderRadius: 8, padding: "8px 14px" }}>
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#9a7c16" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 3 3 21" /><path d="M3 8V3h5" /><path d="M21 16v5h-5" />
+                  </svg>
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#7a6310" }}>
+                    {t("product.size_details")}
+                  </span>
+                </div>
+                {selectedProduct.tipo === "Pingentes" && (
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#eef4ec", border: "1px solid #cfe0c8", borderRadius: 8, padding: "8px 14px" }}>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#3f7a4a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+                    </svg>
+                    <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12.5, fontWeight: 600, letterSpacing: "0.02em", color: "#356b40" }}>
+                      {t("product.delivery")}
+                    </span>
+                  </div>
+                )}
               </div>
               <div style={{ fontFamily: "'Inter',sans-serif", fontSize: 34, fontWeight: 700, color: "#111", marginBottom: 2 }}>
                 {fmtBRL(String(selectedProduct.preco))}

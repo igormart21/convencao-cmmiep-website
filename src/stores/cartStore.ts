@@ -21,6 +21,8 @@ export interface CartItem {
   quantity: number;
   selectedOptions: Array<{ name: string; value: string }>;
   thumbnailImage?: CartImage | null;
+  /** Propriedades enviadas à linha do checkout Shopify (ex.: URL da joia gerada por IA) */
+  attributes?: Array<{ key: string; value: string }>;
 }
 
 const normalizeImage = (image?: { url?: string | null; altText?: string | null } | null): CartImage | null =>
@@ -111,7 +113,7 @@ export const useCartStore = create<CartStore>()(
         try {
           if (existingItem && !existingItem.lineId) {
             clearCart();
-            const result = await createShopifyCart({ variantId: item.variantId, quantity: item.quantity });
+            const result = await createShopifyCart({ variantId: item.variantId, quantity: item.quantity, attributes: item.attributes });
             if (result) {
               const cartLineItem = itemFromCartLine(result.line, item);
               set({
@@ -121,7 +123,7 @@ export const useCartStore = create<CartStore>()(
               });
             }
           } else if (!cartId) {
-            const result = await createShopifyCart({ variantId: item.variantId, quantity: item.quantity });
+            const result = await createShopifyCart({ variantId: item.variantId, quantity: item.quantity, attributes: item.attributes });
             if (result) {
               const cartLineItem = itemFromCartLine(result.line, item);
               set({
@@ -139,7 +141,7 @@ export const useCartStore = create<CartStore>()(
               set({ items: currentItems.map(i => i.variantId === item.variantId ? { ...i, ...item, quantity: newQuantity, lineId: i.lineId } : i) });
             } else if (result.cartNotFound) clearCart();
           } else {
-            const result = await addLineToShopifyCart(cartId, { variantId: item.variantId, quantity: item.quantity });
+            const result = await addLineToShopifyCart(cartId, { variantId: item.variantId, quantity: item.quantity, attributes: item.attributes });
             if (result.success) {
               const currentItems = get().items;
               const cartLineItem = itemFromCartLine(result.line, item);

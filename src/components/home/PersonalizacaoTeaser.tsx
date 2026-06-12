@@ -16,8 +16,9 @@ const MSGS_GERANDO = [
   "Quase pronto, ajustando os últimos detalhes...",
 ];
 
-const VARIANT_ID_OURO_PERS = "gid://shopify/ProductVariant/48912055468259"; 
-const VARIANT_ID_PRATA_PERS = "gid://shopify/ProductVariant/48912055501027";
+// Variantes do produto "Joia Personalizada" na Shopify (handle: joia-personalizada)
+const VARIANT_ID_OURO_PERS = "gid://shopify/ProductVariant/49253071290595"; // Ouro 18k
+const VARIANT_ID_PRATA_PERS = "gid://shopify/ProductVariant/49253071323363"; // Prata 925
 
 const getPersonalizadoProductMock = (material: "ouro" | "prata", imageUrl: string): ShopifyProduct => {
   const isOuro = material === "ouro";
@@ -27,7 +28,7 @@ const getPersonalizadoProductMock = (material: "ouro" | "prata", imageUrl: strin
   return {
     node: {
       id: "gid://shopify/Product/Personalizado",
-      title: `Pingente Personalizado (IA - ${isOuro ? "Ouro 18k" : "Prata 925"})`,
+      title: "Joia Personalizada",
       description: "Você acabou de eternizar sua paixão com uma joia exclusiva gerada por IA.",
       handle: "pingente-personalizado-ia",
       featuredImage: {
@@ -104,6 +105,7 @@ export const PersonalizacaoTeaser = () => {
   const [material, setMaterial]       = useState<"ouro" | "prata">("ouro");
   const [estado, setEstado]           = useState<Estado>("idle");
   const [resultado, setResultado]     = useState<string | null>(null);
+  const [storageUrl, setStorageUrl]   = useState<string | null>(null);
   const [erro, setErro]               = useState<string | null>(null);
   const [comprando, setComprando]     = useState(false);
   const [adicionando, setAdicionando] = useState(false);
@@ -136,6 +138,7 @@ export const PersonalizacaoTeaser = () => {
     reader.onload = ev => setFoto(ev.target?.result as string);
     reader.readAsDataURL(file);
     setResultado(null);
+    setStorageUrl(null);
     setErro(null);
     setEstado("idle");
   };
@@ -146,6 +149,7 @@ export const PersonalizacaoTeaser = () => {
     setEstado("gerando");
     setErro(null);
     setResultado(null);
+    setStorageUrl(null);
     try {
       console.log("[gerar-joia] enviando requisição...");
       const res = await fetch("/api/gerar-joia", {
@@ -158,6 +162,7 @@ export const PersonalizacaoTeaser = () => {
       console.log("[gerar-joia] keys:", Object.keys(data), "imageUrl?", !!data.imageUrl);
       if (data.error) throw new Error(data.error);
       setResultado(data.imageUrl);
+      setStorageUrl(data.storageUrl ?? null);
       setEstado("pronto");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro ao gerar imagem.";
@@ -169,6 +174,16 @@ export const PersonalizacaoTeaser = () => {
 
   const preco     = material === "ouro" ? PRECO_OURO : PRECO_PRATA;
   const fmtPreco  = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v);
+
+  // Propriedades enviadas à linha do checkout Shopify.
+  // `_imagem_url` (com underscore) fica oculta para o cliente, mas visível no
+  // pedido do admin → a joalheria vê exatamente a peça a produzir.
+  const buildJoiaAttributes = (): Array<{ key: string; value: string }> => {
+    const url = storageUrl ?? (resultado?.startsWith("http") ? resultado : null);
+    const attrs = [{ key: "Joia", value: "Personalizada por IA" }];
+    if (url) attrs.push({ key: "_imagem_url", value: url });
+    return attrs;
+  };
 
   const handleAddCart = async () => {
     if (!resultado) return;
@@ -187,6 +202,7 @@ export const PersonalizacaoTeaser = () => {
         quantity: 1,
         selectedOptions: [{ name: "Material", value: isOuro ? "Ouro 18k" : "Prata 925" }],
         thumbnailImage: thumb,
+        attributes: buildJoiaAttributes(),
       });
       patchItem(variantId, { thumbnailImage: thumb, product: mockProduct, price: { amount: priceAmt, currencyCode: "BRL" } });
       setAdicionado(true);
@@ -206,7 +222,7 @@ export const PersonalizacaoTeaser = () => {
     try {
       const isOuro    = material === "ouro";
       const variantId = isOuro ? VARIANT_ID_OURO_PERS : VARIANT_ID_PRATA_PERS;
-      const r = await createShopifyCart({ variantId, quantity: 1 });
+      const r = await createShopifyCart({ variantId, quantity: 1, attributes: buildJoiaAttributes() });
       if (r?.checkoutUrl) {
         window.location.href = r.checkoutUrl;
       } else {

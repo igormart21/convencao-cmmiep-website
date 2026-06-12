@@ -619,9 +619,20 @@ function isCartNotFoundError(userErrors: Array<{ field: string[] | null; message
   );
 }
 
-export async function createShopifyCart(item: { variantId: string; quantity: number }) {
+type LineAttribute = { key: string; value: string };
+
+function buildLine(item: { variantId: string; quantity: number; attributes?: LineAttribute[] }) {
+  const line: { quantity: number; merchandiseId: string; attributes?: LineAttribute[] } = {
+    quantity: item.quantity,
+    merchandiseId: item.variantId,
+  };
+  if (item.attributes?.length) line.attributes = item.attributes;
+  return line;
+}
+
+export async function createShopifyCart(item: { variantId: string; quantity: number; attributes?: LineAttribute[] }) {
   const data = await storefrontApiRequest(CART_CREATE_MUTATION, {
-    input: { lines: [{ quantity: item.quantity, merchandiseId: item.variantId }] },
+    input: { lines: [buildLine(item)] },
   });
   if (data?.data?.cartCreate?.userErrors?.length > 0) {
     console.error('[Shopify] resposta completa:', data);
@@ -662,10 +673,10 @@ export async function createDirectCheckout(variantId: string, quantity = 1) {
   };
 }
 
-export async function addLineToShopifyCart(cartId: string, item: { variantId: string; quantity: number }) {
+export async function addLineToShopifyCart(cartId: string, item: { variantId: string; quantity: number; attributes?: LineAttribute[] }) {
   const data = await storefrontApiRequest(CART_LINES_ADD_MUTATION, {
     cartId,
-    lines: [{ quantity: item.quantity, merchandiseId: item.variantId }],
+    lines: [buildLine(item)],
   });
   const userErrors = data?.data?.cartLinesAdd?.userErrors || [];
   if (isCartNotFoundError(userErrors)) return { success: false, cartNotFound: true };
