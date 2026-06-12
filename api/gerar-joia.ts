@@ -1,26 +1,31 @@
 import OpenAI, { toFile } from "openai";
 import { uploadJoiaImage } from "./_lib/uploadJoia";
 
-export const runtime = "nodejs";
+// Assinatura Node.js (req, res) — é a que o Vercel usa para funções em /api num
+// projeto Vite. (A assinatura Web `Request => Response` trava: o Vercel nunca
+// captura o Response retornado e fica esperando o `res` para sempre.)
 export const maxDuration = 300;
 
-export default async function handler(req: Request): Promise<Response> {
+export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    res.status(405).json({ error: "Method not allowed" });
+    return;
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return Response.json({ error: "OPENAI_API_KEY não configurado." }, { status: 500 });
+    res.status(500).json({ error: "OPENAI_API_KEY não configurado." });
+    return;
   }
 
   let body: { imageBase64?: string; material?: string };
-  try { body = await req.json(); }
-  catch { return Response.json({ error: "Body inválido." }, { status: 400 }); }
+  try { body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body ?? {}); }
+  catch { res.status(400).json({ error: "Body inválido." }); return; }
 
   const { imageBase64, material } = body;
   if (!imageBase64) {
-    return Response.json({ error: "Nenhuma imagem enviada." }, { status: 400 });
+    res.status(400).json({ error: "Nenhuma imagem enviada." });
+    return;
   }
 
   const isOuro = material !== "prata";
@@ -92,7 +97,8 @@ export default async function handler(req: Request): Promise<Response> {
     const dataUrl  = b64 ? `data:image/png;base64,${b64}` : (item?.url ?? null);
 
     if (!dataUrl) {
-      return Response.json({ error: "Sem imagem gerada." }, { status: 500 });
+      res.status(500).json({ error: "Sem imagem gerada." });
+      return;
     }
 
     // Sobe para o Supabase Storage → URL pública estável (usada no pedido Shopify)
@@ -102,11 +108,11 @@ export default async function handler(req: Request): Promise<Response> {
     }
 
     console.log("[gerar-joia] Pingente gerado com sucesso!", storageUrl ? "(storage OK)" : "(sem storage)");
-    return Response.json({ imageUrl: storageUrl ?? dataUrl, storageUrl });
+    res.status(200).json({ imageUrl: storageUrl ?? dataUrl, storageUrl });
 
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Erro inesperado.";
     console.error("[gerar-joia] Erro:", msg);
-    return Response.json({ error: msg }, { status: 500 });
+    res.status(500).json({ error: msg });
   }
 }
