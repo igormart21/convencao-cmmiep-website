@@ -1515,7 +1515,7 @@ const Colecao = () => {
       if (c.handle === "imperium" || c.handle === "imperium-prata") precoPrata = 297.0;
       if (c.handle === "corrida-atleta") precoPrata = 297.0;
       if (c.handle === "strata") precoPrata = 297.0;
-      if (c.handle === "halter") precoPrata = 297.0;
+      if (c.handle === "halter") precoPrata = 2.0;
       if (c.handle === "vigor") precoPrata = 297.0;
       if (c.handle === "kettlebell-crossfit") precoPrata = 327.0;
       if (c.handle === "placa-triatlo") precoPrata = 327.0;

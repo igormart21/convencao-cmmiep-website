@@ -212,7 +212,7 @@ const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Recor
     basePrice: "3487.00",
     variantPrices: {
       "ouro": "3487.00",
-      "prata": "297.00"
+      "prata": "2.00"
     }
   },
   "velox-royale": {
