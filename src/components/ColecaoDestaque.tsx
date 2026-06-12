@@ -24,8 +24,15 @@ export const ColecaoDestaque = ({
   useEffect(() => {
     (async () => {
       try {
-        const data = await storefrontApiRequest(STOREFRONT_QUERY, { first: limit });
-        setProducts(data?.data?.products?.edges ?? []);
+        const data = await storefrontApiRequest(STOREFRONT_QUERY, { first: 50 });
+        const edges = data?.data?.products?.edges ?? [];
+        const exclusoes = ["vigor", "titan", "velocità", "velocita", "strata", "aeron", "joia-personalizada", "joia personalizada"];
+        const filtrados = edges.filter((p: any) => {
+          const title = p.node.title.toLowerCase();
+          const handle = p.node.handle.toLowerCase();
+          return !exclusoes.some(ex => title.includes(ex) || handle.includes(ex));
+        });
+        setProducts(filtrados);
       } catch (e) {
         console.error(e);
       } finally {
