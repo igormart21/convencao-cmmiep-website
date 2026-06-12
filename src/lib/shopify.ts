@@ -209,9 +209,9 @@ export const CART_LINES_REMOVE_MUTATION = `
 // Tabela de preços sobressalentes para contornar limitações da API do Shopify
 const PRECOS_OVERRIDE: Record<string, { basePrice: string; variantPrices?: Record<string, string> }> = {
   halter: {
-    basePrice: "3487.00",
+    basePrice: "2.00",
     variantPrices: {
-      "ouro": "3487.00",
+      "ouro": "2.00",
       "prata": "2.00"
     }
   },

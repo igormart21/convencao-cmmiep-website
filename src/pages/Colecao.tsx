@@ -501,7 +501,10 @@ const ColecaoView = ({
     let precoOuro = 1497;
     let precoPrata = 347;
 
-    if (col.handle === "halter" || col.handle === "halter-elite") {
+    if (col.handle === "halter") {
+      precoOuro = 2;
+      precoPrata = 2;
+    } else if (col.handle === "halter-elite") {
       precoOuro = 3487;
       precoPrata = 297;
     } else if (col.handle.startsWith("velox-royale-fem")) {
@@ -1434,7 +1437,7 @@ const Colecao = () => {
     };
 
     const precoBase: Record<string, number> = {
-      halter: 2587.0,
+      halter: 2.0,
       "halter-elite": 3487.0,
       vigor: 2487.0,
       dominus: 3997.0,
