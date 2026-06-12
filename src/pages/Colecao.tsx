@@ -11,6 +11,7 @@ import {
   ShopifyProduct,
   createShopifyCart,
 } from "@/lib/shopify";
+import { downscaleImage } from "@/lib/downscaleImage";
 import colecoesHero from "@/assets/colecoes-hero.jpg";
 import logo3r from "@/assets/3r-logo.png";
 import sportFisiculturismo from "@/assets/sport-fisiculturismo.jpg";
@@ -791,14 +792,18 @@ const PersonalizarIA = () => {
   const preco     = material === "ouro" ? PRECO_OURO : PRECO_PRATA;
   const fmtPreco  = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v);
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setFotoUrl(URL.createObjectURL(file));
-    const reader = new FileReader();
-    reader.onload = ev => setFoto(ev.target?.result as string);
-    reader.readAsDataURL(file);
     setResultado(null); setStorageUrl(null); setEstado("idle"); setAdicionado(false);
+    try {
+      setFoto(await downscaleImage(file)); // reduz p/ caber no limite de body do Vercel
+    } catch {
+      const reader = new FileReader();
+      reader.onload = ev => setFoto(ev.target?.result as string);
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleGerar = async () => {

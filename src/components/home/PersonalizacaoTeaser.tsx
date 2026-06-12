@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useCartStore } from "@/stores/cartStore";
 import { useCartUIStore } from "@/stores/cartUIStore";
 import { createShopifyCart, ShopifyProduct } from "@/lib/shopify";
+import { downscaleImage } from "@/lib/downscaleImage";
 import { Loader2, ShoppingBag, Zap } from "lucide-react";
 
 const PRECO_OURO  = 1497;
@@ -130,17 +131,21 @@ export const PersonalizacaoTeaser = () => {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [estado]);
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setFotoUrl(URL.createObjectURL(file));
-    const reader = new FileReader();
-    reader.onload = ev => setFoto(ev.target?.result as string);
-    reader.readAsDataURL(file);
     setResultado(null);
     setStorageUrl(null);
     setErro(null);
     setEstado("idle");
+    try {
+      setFoto(await downscaleImage(file)); // reduz p/ caber no limite de body do Vercel
+    } catch {
+      const reader = new FileReader();
+      reader.onload = ev => setFoto(ev.target?.result as string);
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleGerar = async () => {
