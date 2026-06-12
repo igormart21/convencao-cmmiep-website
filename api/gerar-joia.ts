@@ -34,42 +34,8 @@ export default async function handler(req: Request): Promise<Response> {
     const imageBuffer = Buffer.from(base64Data, "base64");
     const imageFile   = await toFile(imageBuffer, `photo.${ext}`, { type: mimeType });
 
-    // ── Etapa 1: GPT-4o Vision extrai descrição cirúrgica ──
-    console.log("[gerar-joia] Etapa 1: analisando foto com GPT-4o Vision...");
-    let poseDescription = "";
-    try {
-      const vision = await openai.chat.completions.create({
-        model: "gpt-4o",
-        max_tokens: 500,
-        messages: [{
-          role: "user",
-          content: [
-            { type: "image_url", image_url: { url: imageBase64, detail: "high" } },
-            {
-              type: "text",
-              text: `You are a jewelry pattern-maker's assistant preparing a FLAT laser-cut pendant. Analyze this photo with extreme precision to capture the person's exact SILHOUETTE and OUTER CONTOUR.
-
-Describe ONLY the following — no names, no identification:
-1. SILHOUETTE & POSE: the exact outer outline of the body — angle of each limb (e.g. "right arm extended 45° upward, left arm bent 90° at elbow downward"), torso tilt, hip and knee angles, overall standing/sitting shape
-2. HEAD & HAIR: exact head tilt, face direction (front-facing, 3/4, or profile), hairstyle outline (e.g. "tight bun on top", "loose ponytail falling left", "straight hair shoulder length")
-3. CLOTHING CONTOUR: outline of every garment — type, fit, hem and sleeve length, neckline, decorative edges (fringe, ruffles, patterns)
-4. HANDS: fingers open/closed/spread outline, thumb position, wrist angle
-5. FEET & SHOES: shoe type outline (ballet slipper, sneaker, boot), any straps/laces, pointed or flexed foot, ankle angle
-
-Be extremely specific with angles and outer contours. This is for a 2D flat cutout — the exact silhouette matters above everything.`,
-            },
-          ],
-        }],
-      });
-      const raw = vision.choices[0]?.message?.content ?? "";
-      if (raw && !raw.toLowerCase().startsWith("i'm sorry") && !raw.toLowerCase().startsWith("i cannot") && raw.length > 50) {
-        poseDescription = raw;
-      }
-    } catch (e) {
-      console.warn("[gerar-joia] GPT-4o Vision falhou:", e instanceof Error ? e.message : e);
-    }
-
-    // ── Etapa 2: gpt-image-1 com foto + descrição precisa ──
+    // ── gpt-image-1 edit: a própria foto é enviada (images.edit), então o
+    //    modelo já enxerga a pose/silhueta — sem etapa de Vision (mais rápido) ──
     const metalSurface = isOuro
       ? "real polished 18K yellow gold — authentic warm golden precious-metal color with a realistic gold metallic sheen and soft reflective highlights, exactly like genuine gold jewelry (NOT a flat yellow, NOT painted, NOT plastic)"
       : "real polished sterling silver 925 — authentic bright silver-white precious-metal color with a realistic silver metallic sheen and soft reflective highlights, exactly like genuine silver jewelry (NOT plain gray, NOT black-and-white, NOT matte paint)";
@@ -78,16 +44,11 @@ Be extremely specific with angles and outer contours. This is for a 2D flat cuto
       ? "warm neutral beige-gray studio background"
       : "neutral gray studio background (RGB ~175,175,175)";
 
-    const poseSection = poseDescription
-      ? `\nEXACT SILHOUETTE REFERENCE FROM THE PHOTO:\n${poseDescription}\nReproduce this exact outline and pose with 100% fidelity in the flat cutout.\n`
-      : "";
-
     const prompt = [
       `Convert the person in this uploaded photo into a FLAT 2D laser-cut pendant made of ${metalSurface}. Use the uploaded image as the PRIMARY GEOMETRY REFERENCE and treat it as a template.`,
       `Redraw the person as clean editorial BLACK LINE-ART (a crisp vector / ink illustration, like a comic line drawing) and cut that illustration out of the flat brushed metal — exactly like a laser-cut silhouette jewelry pendant.`,
       ``,
       `ABSOLUTE PRIORITY — SILHOUETTE FIDELITY: The final pendant MUST preserve the EXACT silhouette and pose of the original person. Replicate with maximum fidelity: pose, body contour, face direction, hairstyle, clothing contour and accessories (sunglasses, watch, belt, shoe details). The result must look as if the person was directly converted into a laser-cut silver pendant. Do NOT modify the pose. The outer silhouette must match the uploaded image as closely as possible.`,
-      poseSection,
       `STYLE — flat metal cutout, NOT a sculpture:`,
       `• Flat 2D pendant with a single uniform thickness`,
       `• NO sculpting, NO 3D relief, NO embossing, NO statue effect, NO depth modeling`,
@@ -115,7 +76,7 @@ Be extremely specific with angles and outer contours. This is for a 2D flat cuto
       `• NO text, NO watermark, NO logo`,
     ].join("\n");
 
-    console.log("[gerar-joia] Etapa 2: gerando com gpt-image-1 portrait 1024x1536...");
+    console.log("[gerar-joia] gerando com gpt-image-1 portrait 1024x1536 (quality medium)...");
 
     const response = await (openai.images.edit as Function)({
       model: "gpt-image-1",
@@ -123,6 +84,7 @@ Be extremely specific with angles and outer contours. This is for a 2D flat cuto
       prompt,
       size: "1024x1536",
       input_fidelity: "high",
+      quality: "medium",
     });
 
     const item     = (response as any).data?.[0];
