@@ -44,7 +44,7 @@ import wodOuro from "@/assets/linha-wod-ouro.jpeg";
 import wodPrata from "@/assets/linha-wod-prata.jpeg";
 import eliteCrossOuro from "@/assets/linha-elite-ouro.jpeg";
 import eliteCrossPrata from "@/assets/linha-elite-prata.jpeg";
-import veloxOuro     from "@/assets/velox-royale-ouro-novo.jpg";
+import veloxOuro     from "@/assets/linha-velox-royale-ouro-masculino.jpg";
 import veloxPrata    from "@/assets/linha-velox-royale-prata-masculino.jpg";
 import veloxFemSpeedOuro from "@/assets/linha-velox-royale-ouro-feminino-speed.jpg";
 import veloxFemSpeedPrata from "@/assets/linha-velox-royale-prata-feminino-speed.jpg";
@@ -1379,7 +1379,13 @@ const Colecao = () => {
       .then((data) => {
         const products: ShopifyProduct[] =
           (data?.data?.products?.edges ?? []).map((e: any) => ({ node: e.node }));
-        setAllProducts(products);
+        const exclusoes = ["joia-personalizada", "joia personalizada", "personalizada", "personalizado"];
+        const filtrados = products.filter((p: ShopifyProduct) => {
+          const title = p.node.title.toLowerCase();
+          const handle = p.node.handle.toLowerCase();
+          return !exclusoes.some(ex => title.includes(ex) || handle.includes(ex));
+        });
+        setAllProducts(filtrados);
       })
       .catch(() => {});
   }, []);

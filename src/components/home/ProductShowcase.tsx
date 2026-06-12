@@ -6,8 +6,8 @@ import valenzaJoia from "@/assets/valenza-joia.jpeg";
 import valenzaJoiaPrata from "@/assets/valenza-joia-prata.jpeg";
 import monarchJoiaPrata from "@/assets/monarch-joia-prata.jpeg";
 import monarchJoiaOuro from "@/assets/monarch-joia-ouro.jpeg";
-import dominusJoiaPrata from "@/assets/dominus-prata-novo.jpg";
-import dominusJoiaOuro from "@/assets/dominus-ouro-novo.jpg";
+import dominusJoiaPrata from "@/assets/dominus-joia-prata.jpeg";
+import dominusJoiaOuro from "@/assets/dominus-joia-ouro.jpeg";
 import titanJoiaOuro from "@/assets/titan-joia-ouro.jpeg";
 import titanJoiaPrata from "@/assets/titan-joia-prata.jpeg";
 import velocitaJoiaPrata from "@/assets/velocita-joia-prata.jpeg";
@@ -42,8 +42,8 @@ import novaCorridaOuroMasc from "@/assets/linha-corrida-ouro-masc.jpg";
 import conjuntoCrossfitOuro from "@/assets/linha-conjunto-crossfit-ouro.jpg";
 import conjuntoWodOuro from "@/assets/linha-wod-ouro.jpeg";
 import conjuntoEliteOuro from "@/assets/linha-elite-ouro.jpeg";
-import corridaAtletaOuroImg from "@/assets/corrida-atleta-ouro-novo.jpg";
-import corridaAtletaPrataImg from "@/assets/corrida-atleta-novo.jpg";
+import corridaAtletaOuroImg from "@/assets/linha-corrida-ouro-fem.jpg";
+import corridaAtletaPrataImg from "@/assets/linha-corrida-prata-fem.jpg";
 
 const STATIC = [
   { nome: "Imperium", mat: "Ouro 18k", img: linhaImperiumOuro, hot: true },
@@ -404,7 +404,7 @@ export const ProductShowcase = () => {
     storefrontApiRequest(STOREFRONT_QUERY, { first: 20 })
       .then(data => {
         const edges: ShopifyProduct[] = data?.data?.products?.edges ?? [];
-        const exclusoes = ["vigor", "titan", "velocità", "velocita", "strata", "aeron", "joia-personalizada", "joia personalizada"];
+        const exclusoes = ["vigor", "titan", "velocità", "velocita", "strata", "aeron", "joia-personalizada", "joia personalizada", "personalizada", "personalizado"];
         const filtrados = edges.filter(p => {
           const title = p.node.title.toLowerCase();
           const handle = p.node.handle.toLowerCase();
